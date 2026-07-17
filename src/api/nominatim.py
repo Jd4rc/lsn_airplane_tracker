@@ -7,7 +7,7 @@ from src.api.base import JSONData
 
 
 class NominaAPIClient(BaseAPIClient):
-    BASE_URL = "https://nominatim.openstreetmap.org/"
+    BASE_URL = "https://nominatim.openstreetmap.org"
 
     def get_data(
         self,
