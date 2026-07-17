@@ -8,6 +8,7 @@ authors = [
 readme = "README.md"
 requires-python = "^3.14"
 dependencies = [
+    "requests (>=2.34.2,<3.0.0)"
 ]
 
 
@@ -40,3 +41,5 @@ max-line-length = 119
 no_implicit_optional = true
 warn_return_any = true
 exclude = 'venv'
+explicit_package_bases = true
+
