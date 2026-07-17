@@ -41,3 +41,5 @@ max-line-length = 119
 no_implicit_optional = true
 warn_return_any = true
 exclude = 'venv'
+explicit_package_bases = true
+
