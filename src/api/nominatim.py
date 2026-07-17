@@ -7,6 +7,7 @@ from src.api.base import JSONData
 
 
 class NominaAPIClient(BaseAPIClient):
+    """Клиент для работы с API Nominatim OpenStreetMap."""
     BASE_URL = "https://nominatim.openstreetmap.org"
 
     def get_data(
@@ -14,7 +15,7 @@ class NominaAPIClient(BaseAPIClient):
         endpoint: str,
         params: dict[str, Any] | None = None,
     ) -> JSONData:
-
+        """Выполняет GET-запрос к API Nominatim и возвращает JSON-ответ."""
         response = requests.get(
             url= f'{self.BASE_URL}{endpoint}',
             params=params,
@@ -34,6 +35,7 @@ class NominaAPIClient(BaseAPIClient):
             query: str,
             limit: int = 1,
     )-> JSONData:
+        """Ищет географический объект по названию и возвращает результаты поиска."""
         return self.get_data(
             '/search',
             {
