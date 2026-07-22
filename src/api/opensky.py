@@ -30,3 +30,20 @@ class OpenSkyAPIClient(BaseAPIClient):
         response.raise_for_status()
 
         return cast(JSONData, response.json())
+
+    def get_states(
+        self,
+        lamin: float,
+        lamax: float,
+        lomin: float,
+        lomax: float,
+    ) -> JSONData:
+        return self.get_data(
+            endpoint="/states/all",
+            params={
+                "lamin": lamin,
+                "lamax": lamax,
+                "lomin": lomin,
+                "lomax": lomax,
+            },
+        )

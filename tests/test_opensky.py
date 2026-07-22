@@ -189,3 +189,34 @@ def test_get_data_passes_none_when_params_not_set(mock_get):
     )
 
     mock_response.raise_for_status.assert_called_once_with()
+
+
+def test_get_states(monkeypatch):
+    client = OpenSkyAPIClient()
+
+    expected_response = {
+        "time": 123456,
+        "states": [],
+    }
+
+    def mock_get_data(endpoint, params):
+        assert endpoint == "/states/all"
+        assert params == {
+            "lamin": 52.3,
+            "lamax": 52.7,
+            "lomin": 13.0,
+            "lomax": 13.8,
+        }
+
+        return expected_response
+
+    monkeypatch.setattr(client, "get_data", mock_get_data)
+
+    result = client.get_states(
+        lamin=52.3,
+        lamax=52.7,
+        lomin=13.0,
+        lomax=13.8,
+    )
+
+    assert result == expected_response
