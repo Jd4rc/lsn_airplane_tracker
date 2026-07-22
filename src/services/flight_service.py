@@ -1,5 +1,3 @@
-from typing import Any
-
 from src.api.base import JSONData
 from src.api.nominatim import NominaAPIClient
 from src.api.opensky import OpenSkyAPIClient
@@ -72,9 +70,7 @@ class FlightService:
         bounding_box = place.get("boundingbox")
 
         if not isinstance(bounding_box, list) or len(bounding_box) != 4:
-            raise ValueError(
-                "Nominatim вернул некорректный boundingbox"
-            )
+            raise ValueError("Nominatim вернул некорректный boundingbox")
 
         south = float(bounding_box[0])
         north = float(bounding_box[1])

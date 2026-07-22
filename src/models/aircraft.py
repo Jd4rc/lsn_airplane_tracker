@@ -14,7 +14,6 @@ class Aircraft:
     heading: float | None
     on_ground: bool
 
-
     @classmethod
     def from_opensky(cls, state: list[Any]) -> Aircraft:
         EXPECTED_STATE_LENGTH = 11
@@ -28,7 +27,7 @@ class Aircraft:
 
         return cls(
             icao24=state[0],
-            callsign = callsign,
+            callsign=callsign,
             longitude=state[5],
             latitude=state[6],
             altitude=state[7],

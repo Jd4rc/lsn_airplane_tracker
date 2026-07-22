@@ -68,5 +68,5 @@ def test_from_opensky_with_none_optional_fields():
 
 def test_from_opensky_with_empty_state():
     state = []
-    with pytest.raises(IndexError):
+    with pytest.raises(ValueError):
         Aircraft.from_opensky(state)
