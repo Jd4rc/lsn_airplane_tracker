@@ -1,10 +1,9 @@
 import argparse
 
+from src.api.nominatim import NominaAPIClient
+from src.api.opensky import OpenSkyAPIClient
 from src.models.aircraft import Aircraft
 from src.services.flight_service import FlightService
-from src.api.opensky import OpenSkyAPIClient
-from src.api.nominatim import NominaAPIClient
-
 
 nominatim_client = NominaAPIClient()
 opensky_client = OpenSkyAPIClient()
@@ -14,22 +13,11 @@ service = FlightService(
     opensky_client=opensky_client,
 )
 
+
 def print_aircraft(aircraft: Aircraft) -> None:
-    altitude = (
-        aircraft.altitude
-        if aircraft.altitude is not None
-        else "unknown"
-    )
-    velocity = (
-        aircraft.velocity
-        if aircraft.velocity is not None
-        else "unknown"
-    )
-    heading = (
-        aircraft.heading
-        if aircraft.heading is not None
-        else "unknown"
-    )
+    altitude = aircraft.altitude if aircraft.altitude is not None else "unknown"
+    velocity = aircraft.velocity if aircraft.velocity is not None else "unknown"
+    heading = aircraft.heading if aircraft.heading is not None else "unknown"
 
     print(
         f"ICAO24: {aircraft.icao24}\n"
@@ -39,6 +27,7 @@ def print_aircraft(aircraft: Aircraft) -> None:
         f"Heading: {heading}°\n"
         f"On ground: {'yes' if aircraft.on_ground else 'no'}\n"
     )
+
 
 def handle_search(city: str) -> None:
     print(f"Searching flights for {city}...")
@@ -56,7 +45,7 @@ def handle_search(city: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog='airplane-tracker')
+    parser = argparse.ArgumentParser(prog="airplane-tracker")
 
     subparsers = parser.add_subparsers(
         dest="command",
@@ -68,12 +57,9 @@ def main() -> None:
 
     args = parser.parse_args()
 
-
     if args.command == "search":
         handle_search(args.city)
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

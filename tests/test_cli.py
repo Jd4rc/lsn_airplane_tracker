@@ -2,6 +2,7 @@ from src import cli
 from src.cli import print_aircraft
 from src.models.aircraft import Aircraft
 
+
 def test_print_aircraft(capsys):
     aircraft = Aircraft(
         icao24="918gg",
@@ -23,7 +24,8 @@ def test_print_aircraft(capsys):
     assert "Altitude: 1000.0" in captured.out
     assert "Velocity: 200.0" in captured.out
     assert "Heading: 90.0" in captured.out
-    assert 'On ground: no' in captured.out
+    assert "On ground: no" in captured.out
+
 
 def test_print_aircraft_with_unknown_values(capsys) -> None:
     aircraft = Aircraft(
@@ -46,7 +48,7 @@ def test_print_aircraft_with_unknown_values(capsys) -> None:
     assert "Altitude: unknown" in captured.out
     assert "Velocity: unknown" in captured.out
     assert "Heading: unknown" in captured.out
-    assert 'On ground: yes' in captured.out
+    assert "On ground: yes" in captured.out
 
 
 def test_handle_search(capsys, monkeypatch):
@@ -61,7 +63,7 @@ def test_handle_search(capsys, monkeypatch):
         on_ground=False,
     )
 
-    def fake_get_aircraft_by_location(city:str) -> list[Aircraft]:
+    def fake_get_aircraft_by_location(city: str) -> list[Aircraft]:
         return [aircraft]
 
     monkeypatch.setattr(
@@ -70,16 +72,17 @@ def test_handle_search(capsys, monkeypatch):
         fake_get_aircraft_by_location,
     )
 
-    cli.handle_search('Minsk')
+    cli.handle_search("Minsk")
 
     captured = capsys.readouterr()
 
-    assert 'Searching flights for Minsk...' in captured.out
-    assert 'Found 1 aircraft near Minsk' in captured.out
+    assert "Searching flights for Minsk..." in captured.out
+    assert "Found 1 aircraft near Minsk" in captured.out
     assert "ICAO24: 918gg" in captured.out
 
-def test_handle_search_with_no_aircraft (capsys, monkeypatch):
-    def fake_get_aircraft_by_location(city:str) -> list[Aircraft]:
+
+def test_handle_search_with_no_aircraft(capsys, monkeypatch):
+    def fake_get_aircraft_by_location(city: str) -> list[Aircraft]:
         return []
 
     monkeypatch.setattr(
@@ -88,10 +91,9 @@ def test_handle_search_with_no_aircraft (capsys, monkeypatch):
         fake_get_aircraft_by_location,
     )
 
-    cli.handle_search('Minsk')
+    cli.handle_search("Minsk")
 
     captured = capsys.readouterr()
 
-    assert 'Searching flights for Minsk...' in captured.out
-    assert 'No aircraft found near Minsk' in captured.out
-
+    assert "Searching flights for Minsk..." in captured.out
+    assert "No aircraft found near Minsk" in captured.out
