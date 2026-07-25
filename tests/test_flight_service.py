@@ -6,6 +6,23 @@ from src.models.aircraft import Aircraft
 from src.services.flight_service import FlightService
 
 
+def create_aircraft(
+    callsign: str,
+    altitude: float | None,
+    on_ground: bool = False,
+) -> Aircraft:
+    return Aircraft(
+        icao24="abc123",
+        callsign=callsign,
+        latitude=55.0,
+        longitude=37.0,
+        altitude=altitude,
+        velocity=200.0,
+        heading=90.0,
+        on_ground=on_ground,
+    )
+
+
 def test_get_area_bounds():
     nominatim_client = Mock()
     opensky_client = Mock()
@@ -181,3 +198,83 @@ def test_get_aircraft_by_location_returns_empty_list_when_states_is_none(
     result = service.get_aircraft_by_location("Berlin")
 
     assert result == []
+
+
+def test_get_top_aircraft_by_altitude_sorts_aircraft():
+    service = FlightService(Mock(), Mock())
+
+    service.get_aircraft_by_location = Mock(
+        return_value=[
+            create_aircraft("low", 1000.0),
+            create_aircraft("high", 3000.0),
+            create_aircraft("middle", 2000.0),
+        ]
+    )
+
+    result = service.get_top_aircraft_by_altitude(
+        "Moscow",
+        limit=3,
+    )
+
+    assert [aircraft.callsign for aircraft in result] == ["high", "middle", "low"]
+
+
+def test_get_top_aircraft_by_altitude_limit():
+    service = FlightService(Mock(), Mock())
+
+    service.get_aircraft_by_location = Mock(
+        return_value=[
+            create_aircraft("low", 1000.0),
+            create_aircraft("high", 3000.0),
+            create_aircraft("middle", 2000.0),
+        ]
+    )
+
+    result = service.get_top_aircraft_by_altitude(
+        "Moscow",
+        limit=2,
+    )
+
+    assert [aircraft.callsign for aircraft in result] == [
+        "high",
+        "middle",
+    ]
+
+
+def test_get_top_aircraft_by_altitude_with_none_altitude():
+    service = FlightService(Mock(), Mock())
+
+    service.get_aircraft_by_location = Mock(
+        return_value=[
+            create_aircraft("low", 1000.0),
+            create_aircraft("high", None),
+            create_aircraft("middle", None),
+        ]
+    )
+
+    result = service.get_top_aircraft_by_altitude(
+        "Moscow",
+        limit=5,
+    )
+
+    assert [aircraft.callsign for aircraft in result] == [
+        "low",
+    ]
+
+
+@pytest.mark.parametrize(
+    "limit",
+    [
+        0,
+        -1,
+        -15,
+    ],
+)
+def test_get_top_aircraft_by_altitude_with_raises_invalid_limit(limit):
+    service = FlightService(Mock(), Mock())
+
+    with pytest.raises(ValueError, match="Лимит должен быть больше нуля"):
+        service.get_top_aircraft_by_altitude(
+            location="Moscow",
+            limit=limit,
+        )

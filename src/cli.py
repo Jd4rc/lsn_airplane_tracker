@@ -4,6 +4,7 @@ from src.api.nominatim import NominaAPIClient
 from src.api.opensky import OpenSkyAPIClient
 from src.models.aircraft import Aircraft
 from src.services.flight_service import FlightService
+from src.storage.json_storage import JsonStorage
 
 nominatim_client = NominaAPIClient()
 opensky_client = OpenSkyAPIClient()
@@ -38,7 +39,15 @@ def handle_search(city: str) -> None:
         print(f"No aircraft found near {city}")
         return
 
+    storage = JsonStorage()
+
+    file_path = storage.save(
+        aircraft=aircraft_list,
+        location=city,
+    )
+
     print(f"Found {len(aircraft_list)} aircraft near {city}")
+    print(f"Saved {len(aircraft_list)} aircraft to {file_path}")
 
     for aircraft in aircraft_list:
         print_aircraft(aircraft)
