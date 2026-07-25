@@ -78,3 +78,23 @@ class FlightService:
         east = float(bounding_box[3])
 
         return south, north, west, east
+
+    def get_top_aircraft_by_altitude(
+        self,
+        location: str,
+        limit: int,
+    ) -> list[Aircraft]:
+        if limit <= 0:
+            raise ValueError("Лимит должен быть больше нуля")
+
+        aircraft = self.get_aircraft_by_location(location)
+
+        aircraft_with_altitude = [item for item in aircraft if item.altitude is not None]
+
+        sorted_aircraft = sorted(
+            aircraft_with_altitude,
+            key=lambda item: item.altitude or 0.0,
+            reverse=True,
+        )
+
+        return sorted_aircraft[:limit]
