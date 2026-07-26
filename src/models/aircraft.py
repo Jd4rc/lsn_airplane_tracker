@@ -7,6 +7,7 @@ from mypy.nodes import Any
 class Aircraft:
     icao24: str
     callsign: str | None
+    origin_country: str
     latitude: float | None
     longitude: float | None
     altitude: float | None
@@ -28,6 +29,7 @@ class Aircraft:
         return cls(
             icao24=state[0],
             callsign=callsign,
+            origin_country=state[2],
             longitude=state[5],
             latitude=state[6],
             altitude=state[7],

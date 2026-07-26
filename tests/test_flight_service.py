@@ -14,6 +14,7 @@ def create_aircraft(
     return Aircraft(
         icao24="abc123",
         callsign=callsign,
+        origin_country='Belarus',
         latitude=55.0,
         longitude=37.0,
         altitude=altitude,
@@ -278,3 +279,99 @@ def test_get_top_aircraft_by_altitude_with_raises_invalid_limit(limit):
             location="Moscow",
             limit=limit,
         )
+
+
+def test_get_aircraft_by_country(monkeypatch):
+    service = FlightService(Mock(), Mock())
+
+    german_aircraft_1 = Mock(origin_country="Germany")
+    german_aircraft_2 = Mock(origin_country="Germany")
+    turkish_aircraft = Mock(origin_country="Turkey")
+
+    aircraft = [
+        german_aircraft_1,
+        german_aircraft_2,
+        turkish_aircraft
+    ]
+
+    monkeypatch.setattr(
+        service,
+        'get_aircraft_by_location',
+        lambda location: aircraft,
+    )
+
+    result = service.get_aircraft_by_country(
+        location="Moscow",
+        country="Germany",
+    )
+
+    assert result == [
+        german_aircraft_1,
+        german_aircraft_2
+    ]
+
+def test_get_aircraft_by_country_case_insensitive(monkeypatch):
+    service = FlightService(Mock(), Mock())
+
+    german_aircraft_1 = Mock(origin_country="Germany")
+    turkish_aircraft = Mock(origin_country="Turkey")
+
+    aircraft = [
+        german_aircraft_1,
+        turkish_aircraft
+    ]
+
+    monkeypatch.setattr(
+        service,
+        'get_aircraft_by_location',
+        lambda location: aircraft,
+    )
+
+    result = service.get_aircraft_by_country(
+        location="Moscow",
+        country="gERMAny",
+    )
+
+    assert result == [
+        german_aircraft_1,
+    ]
+
+
+def test_get_aircraft_by_country_no_match_country(monkeypatch):
+    service = FlightService(Mock(), Mock())
+
+    german_aircraft_1 = Mock(origin_country="Germany")
+    german_aircraft_2 = Mock(origin_country="Germany")
+    turkish_aircraft = Mock(origin_country="Turkey")
+
+    aircraft = [
+        german_aircraft_1,
+        german_aircraft_2,
+        turkish_aircraft
+    ]
+
+    monkeypatch.setattr(
+        service,
+        'get_aircraft_by_location',
+        lambda location: aircraft,
+    )
+
+    result = service.get_aircraft_by_country(
+        location="Moscow",
+        country="123",
+    )
+
+    assert result == []
+
+def test_get_aircraft_by_country_calls_get_aircraft_by_location():
+    service = FlightService(Mock(), Mock())
+
+    service.get_aircraft_by_location = Mock(return_value=[])
+
+    service.get_aircraft_by_country(
+        location="Moscow",
+        country="Germany",
+    )
+
+    service.get_aircraft_by_location.assert_called_once_with(
+        "Moscow", )
