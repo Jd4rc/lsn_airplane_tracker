@@ -7,6 +7,7 @@ def test_print_aircraft(capsys):
     aircraft = Aircraft(
         icao24="918gg",
         callsign="TEST123",
+        origin_country="Belarus",
         latitude=55.75,
         longitude=37.61,
         altitude=1000.0,
@@ -31,6 +32,7 @@ def test_print_aircraft_with_unknown_values(capsys) -> None:
     aircraft = Aircraft(
         icao24="918gg",
         callsign=None,
+        origin_country="Belarus",
         latitude=None,
         longitude=None,
         altitude=None,
@@ -55,6 +57,7 @@ def test_handle_search(capsys, monkeypatch):
     aircraft = Aircraft(
         icao24="918gg",
         callsign="TEST123",
+        origin_country="Belarus",
         latitude=55.75,
         longitude=37.61,
         altitude=1000.0,
@@ -76,8 +79,8 @@ def test_handle_search(capsys, monkeypatch):
 
     captured = capsys.readouterr()
 
-    assert "Searching flights for Minsk..." in captured.out
-    assert "Found 1 aircraft near Minsk" in captured.out
+    assert "Поиск самолётов для Minsk..." in captured.out
+    assert "Найдено самолётов поблизости от Minsk: 1" in captured.out
     assert "ICAO24: 918gg" in captured.out
 
 
@@ -95,5 +98,5 @@ def test_handle_search_with_no_aircraft(capsys, monkeypatch):
 
     captured = capsys.readouterr()
 
-    assert "Searching flights for Minsk..." in captured.out
-    assert "No aircraft found near Minsk" in captured.out
+    assert "Поиск самолётов для Minsk..." in captured.out
+    assert "Самолётов поблизости от Minsk не найдено" in captured.out
