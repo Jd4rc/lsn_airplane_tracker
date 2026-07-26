@@ -18,6 +18,7 @@ def make_aircraft() -> Aircraft:
         heading=180.0,
     )
 
+
 def test_print_aircraft(capsys):
     aircraft = Aircraft(
         icao24="918gg",
@@ -127,19 +128,19 @@ def test_handle_search_with_country(monkeypatch, capsys):
 
     monkeypatch.setattr(
         cli.service,
-        'get_aircraft_by_country',
+        "get_aircraft_by_country",
         country_mock,
     )
 
     monkeypatch.setattr(
         cli.service,
-        'get_aircraft_by_location',
+        "get_aircraft_by_location",
         location_mock,
     )
 
     monkeypatch.setattr(
         cli.service,
-        'get_top_aircraft_by_altitude',
+        "get_top_aircraft_by_altitude",
         altitude_mock,
     )
 
@@ -154,9 +155,9 @@ def test_handle_search_with_country(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert 'Berlin' in captured.out
-    assert 'Germany' in captured.out
-    assert 'TEST123' in captured.out
+    assert "Berlin" in captured.out
+    assert "Germany" in captured.out
+    assert "TEST123" in captured.out
 
 
 def test_handle_search_with_top_altitude(capsys, monkeypatch):
@@ -168,24 +169,24 @@ def test_handle_search_with_top_altitude(capsys, monkeypatch):
 
     monkeypatch.setattr(
         cli.service,
-        'get_aircraft_by_country',
+        "get_aircraft_by_country",
         country_mock,
     )
 
     monkeypatch.setattr(
         cli.service,
-        'get_aircraft_by_location',
+        "get_aircraft_by_location",
         location_mock,
     )
 
     monkeypatch.setattr(
         cli.service,
-        'get_top_aircraft_by_altitude',
+        "get_top_aircraft_by_altitude",
         altitude_mock,
     )
 
     cli.handle_search(
-        city='Berlin',
+        city="Berlin",
         top_altitude=5,
     )
 
@@ -195,46 +196,48 @@ def test_handle_search_with_top_altitude(capsys, monkeypatch):
 
     captured = capsys.readouterr()
 
-    assert 'Berlin' in captured.out
-    assert 'топ-5' in captured.out
-    assert 'TEST123' in captured.out
+    assert "Berlin" in captured.out
+    assert "топ-5" in captured.out
+    assert "TEST123" in captured.out
+
 
 def test_handle_search_with_country_and_empty_aircraft(capsys, monkeypatch):
     country_mock = Mock(return_value=[])
 
     monkeypatch.setattr(
         cli.service,
-        'get_aircraft_by_country',
+        "get_aircraft_by_country",
         country_mock,
     )
 
     cli.handle_search(
-        city='Berlin',
-        country='Germany',
+        city="Berlin",
+        country="Germany",
     )
 
-    country_mock.assert_called_once_with('Berlin', 'Germany')
+    country_mock.assert_called_once_with("Berlin", "Germany")
 
     captured = capsys.readouterr()
 
-    assert 'Самолётов поблизости от Berlin не найдено' in captured.out
+    assert "Самолётов поблизости от Berlin не найдено" in captured.out
+
 
 def test_handle_search_with_top_altitude_and_empty_aircraft(capsys, monkeypatch):
     altitude_mock = Mock(return_value=[])
 
     monkeypatch.setattr(
         cli.service,
-        'get_top_aircraft_by_altitude',
+        "get_top_aircraft_by_altitude",
         altitude_mock,
     )
 
     cli.handle_search(
-        city='Berlin',
+        city="Berlin",
         top_altitude=5,
     )
 
-    altitude_mock.assert_called_once_with('Berlin', 5)
+    altitude_mock.assert_called_once_with("Berlin", 5)
 
     captured = capsys.readouterr()
 
-    assert 'Самолётов поблизости от Berlin не найдено' in captured.out
+    assert "Самолётов поблизости от Berlin не найдено" in captured.out
