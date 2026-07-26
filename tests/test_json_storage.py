@@ -11,6 +11,7 @@ def test_save_creates_json_storage(tmp_path):
         Aircraft(
             icao24="152022",
             callsign="AFL1544",
+            origin_country="Belarus",
             latitude=55.75,
             longitude=37.61,
             altitude=4503.42,
@@ -34,6 +35,7 @@ def test_save_creates_correct_json_data(tmp_path):
         Aircraft(
             icao24="152022",
             callsign="AFL1544",
+            origin_country="Belarus",
             latitude=55.75,
             longitude=37.61,
             altitude=4503.42,
@@ -56,6 +58,7 @@ def test_save_creates_correct_json_data(tmp_path):
             {
                 "icao24": "152022",
                 "callsign": "AFL1544",
+                "origin_country": "Belarus",
                 "latitude": 55.75,
                 "longitude": 37.61,
                 "altitude": 4503.42,
@@ -74,6 +77,7 @@ def test_save_writes_all_aircraft(tmp_path):
         Aircraft(
             icao24="152022",
             callsign="AFL1544",
+            origin_country="Belarus",
             latitude=55.75,
             longitude=37.61,
             altitude=4503.42,
@@ -84,6 +88,7 @@ def test_save_writes_all_aircraft(tmp_path):
         Aircraft(
             icao24="151d8b",
             callsign="AFL1518",
+            origin_country="Belarus",
             latitude=55.80,
             longitude=37.70,
             altitude=906.78,

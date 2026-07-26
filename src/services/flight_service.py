@@ -1,5 +1,3 @@
-from operator import itemgetter
-
 from src.api.base import JSONData
 from src.api.nominatim import NominaAPIClient
 from src.api.opensky import OpenSkyAPIClient
@@ -102,14 +100,10 @@ class FlightService:
         return sorted_aircraft[:limit]
 
     def get_aircraft_by_country(
-            self,
-            location: str,
-            country: str,
+        self,
+        location: str,
+        country: str,
     ) -> list[Aircraft]:
         aircraft = self.get_aircraft_by_location(location)
 
-        return [
-            item
-            for item in aircraft
-            if item.origin_country.casefold() == country.casefold()
-        ]
+        return [item for item in aircraft if item.origin_country.casefold() == country.casefold()]

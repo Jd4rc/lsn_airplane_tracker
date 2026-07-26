@@ -1,5 +1,7 @@
 import argparse
 
+import requests
+
 from src.api.nominatim import NominaAPIClient
 from src.api.opensky import OpenSkyAPIClient
 from src.models.aircraft import Aircraft
@@ -30,14 +32,31 @@ def print_aircraft(aircraft: Aircraft) -> None:
     )
 
 
-def handle_search(city: str) -> None:
-    print(f"Searching flights for {city}...")
+def handle_search(
+    city: str,
+    country: str | None = None,
+    top_altitude: int | None = None,
+) -> None:
+    try:
+        if country is not None:
+            print(f"Поиск самолётов для {city} " f"по стране регистрации {country}...")
+            aircraft_list = service.get_aircraft_by_country(city, country)
+        elif top_altitude is not None:
+            print(f"Поиск самолётов для {city}: " f"топ-{top_altitude} по высоте...")
+            aircraft_list = service.get_top_aircraft_by_altitude(city, top_altitude)
+        else:
+            print(f"Поиск самолётов для {city}...")
+            aircraft_list = service.get_aircraft_by_location(city)
 
-    aircraft_list = service.get_aircraft_by_location(city)
+    except requests.exceptions.Timeout:
+        print("Сервис не ответил вовремя. " "Проверьте подключение и повторите запрос.")
+        return
 
     if not aircraft_list:
-        print(f"No aircraft found near {city}")
+        print(f"Самолётов поблизости от {city} не найдено")
         return
+
+    print(f"Найдено самолётов поблизости от {city}: " f"{len(aircraft_list)}")
 
     storage = JsonStorage()
 
@@ -46,8 +65,7 @@ def handle_search(city: str) -> None:
         location=city,
     )
 
-    print(f"Found {len(aircraft_list)} aircraft near {city}")
-    print(f"Saved {len(aircraft_list)} aircraft to {file_path}")
+    print(f"Сохранено {len(aircraft_list)} самолетов в {file_path}\n")
 
     for aircraft in aircraft_list:
         print_aircraft(aircraft)
@@ -64,10 +82,25 @@ def main() -> None:
     search = subparsers.add_parser("search")
     search.add_argument("city")
 
+    filters = search.add_mutually_exclusive_group()
+
+    filters.add_argument("--country", help="Фильтрация самолетов по стране происхождения")
+
+    filters.add_argument(
+        "--top-altitude",
+        type=int,
+        metavar="LIMIT",
+        help="Показать самолет с наибольшей высотой полета",
+    )
+
     args = parser.parse_args()
 
     if args.command == "search":
-        handle_search(args.city)
+        handle_search(
+            city=args.city,
+            country=args.country,
+            top_altitude=args.top_altitude,
+        )
 
 
 if __name__ == "__main__":
