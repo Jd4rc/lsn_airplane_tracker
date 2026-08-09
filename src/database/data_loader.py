@@ -47,8 +47,53 @@ def insert_country(
             return result[0]
 
 
-def insert_aircraft(
-    aircraft: Aircraft,
+from src.models.aircraft import Aircraft
+
+
+def insert_aircraft_list(
+    aircraft_list: list[Aircraft],
     country_id: int,
 ) -> None:
-    ...
+    """Добавляет самолёт в БД и возвращает его id."""
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM aeroplanes
+                WHERE country_id = %s;
+                """,
+                (country_id,),
+            )
+
+            for aircraft in aircraft_list:
+                cur.execute(
+                    """
+                    INSERT INTO aeroplanes (
+                        icao24,
+                        callsign,
+                        origin_country,
+                        longitude,
+                        latitude,
+                        baro_altitude,
+                        velocity,
+                        true_track,
+                        on_ground,
+                        country_id
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id;
+                    """,
+                    (
+                        aircraft.icao24,
+                        aircraft.callsign,
+                        aircraft.origin_country,
+                        aircraft.longitude,
+                        aircraft.latitude,
+                        aircraft.altitude,
+                        aircraft.velocity,
+                        aircraft.heading,
+                        aircraft.on_ground,
+                        country_id,
+                    ),
+                )
