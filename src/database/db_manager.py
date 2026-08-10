@@ -19,3 +19,16 @@ class DBManager:
                 )
 
                 return cur.fetchall()
+
+    def get_all_aeroplanes(self) -> list[tuple]:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT *
+                    FROM aeroplanes
+                    ORDER BY id;
+                    """
+                )
+
+                return cur.fetchall()
