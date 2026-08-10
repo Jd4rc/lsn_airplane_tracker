@@ -65,3 +65,18 @@ class DBManager:
                 )
 
                 return cur.fetchall()
+
+    def get_aeroplanes_with_keyword(self, keyword: str) -> list[tuple]:
+
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT *
+                    FROM aeroplanes
+                    WHERE callsign ILIKE %s;
+                    """,
+                    (f'%{keyword}%',),
+                )
+
+                return cur.fetchall()
