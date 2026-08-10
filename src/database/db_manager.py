@@ -1,5 +1,3 @@
-from unittest import result
-
 from src.database.connection import get_connection
 
 
@@ -49,3 +47,21 @@ class DBManager:
                 result = cur.fetchone()
 
                 return result[0]
+
+    def get_aeroplanes_with_higher_velocity(self) -> list[tuple]:
+
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT *
+                    FROM aeroplanes
+                    WHERE velocity > (
+                        SELECT AVG(velocity)
+                        FROM aeroplanes
+                    )
+                    ORDER BY velocity DESC;
+                    """
+                )
+
+                return cur.fetchall()
