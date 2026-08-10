@@ -1,3 +1,5 @@
+from unittest import result
+
 from src.database.connection import get_connection
 
 
@@ -32,3 +34,18 @@ class DBManager:
                 )
 
                 return cur.fetchall()
+
+
+    def get_avg_velocity(self) -> float | None:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT AVG(velocity)
+                    FROM aeroplanes;
+                    """
+                )
+
+                result = cur.fetchone()
+
+                return result[0]
