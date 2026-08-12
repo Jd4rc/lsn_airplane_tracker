@@ -154,3 +154,166 @@ def test_get_all_aeroplanes():
     assert result[0][1] == 'abc001'
     assert result[1][1] == 'abc002'
 
+def test_get_avg_velocity():
+    country_id = insert_country(
+        name="Germany",
+        south_lat=47.0,
+        north_lat=55.0,
+        west_lon=5.0,
+        east_lon=15.0,
+    )
+
+    aircraft_list = [
+        Aircraft(
+            icao24="abc001",
+            callsign="GER001",
+            origin_country="Germany",
+            longitude=10.0,
+            latitude=50.0,
+            altitude=10000.0,
+            velocity=200.0,
+            heading=90.0,
+            on_ground=False,
+        ),
+        Aircraft(
+            icao24="abc002",
+            callsign="GER002",
+            origin_country="Germany",
+            longitude=11.0,
+            latitude=51.0,
+            altitude=12000.0,
+            velocity=300.0,
+            heading=120.0,
+            on_ground=False,
+        ),
+    ]
+
+    insert_aircraft_list(aircraft_list, country_id)
+
+    manager = DBManager()
+
+    result = manager.get_avg_velocity()
+
+    assert result == 250.0
+
+def test_get_avg_velocity_without_aeroplanes():
+    manager = DBManager()
+
+    result = manager.get_avg_velocity()
+
+    assert result is None
+
+def test_get_aeroplanes_with_higher_velocity():
+    country_id = insert_country(
+        name="Germany",
+        south_lat=47.0,
+        north_lat=55.0,
+        west_lon=5.0,
+        east_lon=15.0,
+    )
+
+    aircraft_list = [
+        Aircraft(
+            icao24="abc001",
+            callsign="GER001",
+            origin_country="Germany",
+            longitude=10.0,
+            latitude=50.0,
+            altitude=10000.0,
+            velocity=200.0,
+            heading=90.0,
+            on_ground=False,
+        ),
+        Aircraft(
+            icao24="abc002",
+            callsign="GER002",
+            origin_country="Germany",
+            longitude=11.0,
+            latitude=51.0,
+            altitude=11000.0,
+            velocity=300.0,
+            heading=100.0,
+            on_ground=False,
+        ),
+        Aircraft(
+            icao24="abc003",
+            callsign="GER003",
+            origin_country="Germany",
+            longitude=12.0,
+            latitude=52.0,
+            altitude=12000.0,
+            velocity=400.0,
+            heading=110.0,
+            on_ground=False,
+        ),
+    ]
+
+    insert_aircraft_list(aircraft_list, country_id)
+
+    manager = DBManager()
+
+    result = manager.get_aeroplanes_with_higher_velocity()
+
+    assert len(result) == 1
+    assert result[0][1] == "abc003"
+    assert result[0][7] == 400.0
+
+
+def test_get_aeroplanes_with_keyword():
+    country_id = insert_country(
+        name="Germany",
+        south_lat=47.0,
+        north_lat=55.0,
+        west_lon=5.0,
+        east_lon=15.0,
+    )
+
+    aircraft_list = [
+        Aircraft(
+            icao24="abc001",
+            callsign="GER001",
+            origin_country="Germany",
+            longitude=10.0,
+            latitude=50.0,
+            altitude=10000.0,
+            velocity=200.0,
+            heading=90.0,
+            on_ground=False,
+        ),
+        Aircraft(
+            icao24="abc002",
+            callsign="GER002",
+            origin_country="Germany",
+            longitude=11.0,
+            latitude=51.0,
+            altitude=11000.0,
+            velocity=300.0,
+            heading=100.0,
+            on_ground=False,
+        ),
+        Aircraft(
+            icao24="abc003",
+            callsign="FRA001",
+            origin_country="France",
+            longitude=12.0,
+            latitude=52.0,
+            altitude=12000.0,
+            velocity=400.0,
+            heading=110.0,
+            on_ground=False,
+        ),
+    ]
+
+    insert_aircraft_list(aircraft_list, country_id)
+
+    manager = DBManager()
+
+    result = manager.get_aeroplanes_with_keyword("ger")
+
+    assert len(result) == 2
+    assert result[0][2] == "GER001"
+    assert result[1][2] == "GER002"
+
+
+
+

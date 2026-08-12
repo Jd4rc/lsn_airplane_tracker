@@ -38,4 +38,3 @@ def use_test_database(monkeypatch):
                 RESTART IDENTITY CASCADE;
                 """
             )
-
