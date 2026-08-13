@@ -2,7 +2,9 @@ from src.database.connection import get_connection
 
 
 class DBManager:
+    """Предоставляет методы для получения данных о самолётах из БД."""
     def get_countries_and_aeroplanes_count(self) -> list[tuple[str, int]]:
+        """Возвращает список стран и количество самолётов для каждой страны."""
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -19,6 +21,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_all_aeroplanes(self) -> list[tuple]:
+        """Возвращает список всех самолётов из БД."""
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -30,6 +33,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_avg_velocity(self) -> float | None:
+        """Возвращает среднюю скорость самолётов или None, если данных нет."""
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -45,7 +49,7 @@ class DBManager:
                 return float(result[0])
 
     def get_aeroplanes_with_higher_velocity(self) -> list[tuple]:
-
+        """Возвращает самолёты со скоростью выше средней."""
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -61,7 +65,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_aeroplanes_with_keyword(self, keyword: str) -> list[tuple]:
-
+        """Возвращает самолёты, содержащие keyword в позывном."""
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
