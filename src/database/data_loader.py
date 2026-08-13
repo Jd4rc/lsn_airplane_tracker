@@ -1,4 +1,5 @@
 from src.database.connection import get_connection
+from src.models.aircraft import Aircraft
 
 
 def insert_country(
@@ -44,10 +45,7 @@ def insert_country(
             if result is None:
                 raise RuntimeError("Не удалось получить id страны")
 
-            return result[0]
-
-
-from src.models.aircraft import Aircraft
+            return int(result[0])
 
 
 def insert_aircraft_list(
