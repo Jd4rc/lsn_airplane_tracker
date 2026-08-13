@@ -5,8 +5,7 @@ class DBManager:
     def get_countries_and_aeroplanes_count(self) -> list[tuple[str, int]]:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
+                cur.execute("""
                     SELECT
                         countries.name,
                         COUNT(aeroplanes.id)
@@ -15,45 +14,41 @@ class DBManager:
                         ON countries.id = aeroplanes.country_id
                     GROUP BY countries.id, countries.name
                     ORDER BY countries.name;
-                    """
-                )
+                    """)
 
                 return cur.fetchall()
 
     def get_all_aeroplanes(self) -> list[tuple]:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
+                cur.execute("""
                     SELECT *
                     FROM aeroplanes
                     ORDER BY id;
-                    """
-                )
+                    """)
 
                 return cur.fetchall()
-
 
     def get_avg_velocity(self) -> float | None:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
+                cur.execute("""
                     SELECT AVG(velocity)
                     FROM aeroplanes;
-                    """
-                )
+                    """)
 
                 result = cur.fetchone()
 
-                return result[0]
+                if result is None or result[0] is None:
+                    return None
+
+                return float(result[0])
 
     def get_aeroplanes_with_higher_velocity(self) -> list[tuple]:
 
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
+                cur.execute("""
                     SELECT *
                     FROM aeroplanes
                     WHERE velocity > (
@@ -61,8 +56,7 @@ class DBManager:
                         FROM aeroplanes
                     )
                     ORDER BY velocity DESC;
-                    """
-                )
+                    """)
 
                 return cur.fetchall()
 
@@ -76,7 +70,7 @@ class DBManager:
                     FROM aeroplanes
                     WHERE callsign ILIKE %s;
                     """,
-                    (f'%{keyword}%',),
+                    (f"%{keyword}%",),
                 )
 
                 return cur.fetchall()

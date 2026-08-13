@@ -1,6 +1,7 @@
+from src.database.data_loader import insert_aircraft_list
+from src.database.data_loader import insert_country
 from src.models.aircraft import Aircraft
 from tests.conftest import get_test_connection
-from src.database.data_loader import insert_country, insert_aircraft_list
 
 
 def test_insert_country():
@@ -18,7 +19,7 @@ def test_insert_country():
         with conn.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT 
+                SELECT
                     id,
                     name,
                     south_lat,
@@ -35,12 +36,13 @@ def test_insert_country():
 
             assert result == (
                 country_id,
-                'Germany',
+                "Germany",
                 47.0,
                 55.0,
                 5.0,
                 15.0,
             )
+
 
 def test_insert_country_updates_existing_country():
     first_id = insert_country(
@@ -141,7 +143,7 @@ def test_insert_aircraft_list():
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT 
+                SELECT
                     icao24,
                     callsign,
                     origin_country,
@@ -162,30 +164,8 @@ def test_insert_aircraft_list():
             result = cur.fetchall()
 
             assert result == [
-                (
-                    "abc001",
-                    "GER001",
-                    "Germany",
-                    10.0,
-                    50.0,
-                    10000.0,
-                    200.0,
-                    90.0,
-                    False,
-                    country_id
-                ),
-                (
-                    "abc002",
-                    "GER002",
-                    "Germany",
-                    11.0,
-                    51.0,
-                    12000.0,
-                    300.0,
-                    120.0,
-                    False,
-                    country_id
-                )
+                ("abc001", "GER001", "Germany", 10.0, 50.0, 10000.0, 200.0, 90.0, False, country_id),
+                ("abc002", "GER002", "Germany", 11.0, 51.0, 12000.0, 300.0, 120.0, False, country_id),
             ]
 
 
@@ -257,4 +237,3 @@ def test_insert_aircraft_list_replaces_existing_aircraft():
     assert result == [
         ("xyz001", "NEW001"),
     ]
-

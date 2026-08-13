@@ -6,8 +6,7 @@ def create_tables() -> None:
 
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                """
+            cur.execute("""
                 CREATE TABLE IF NOT EXISTS countries (
                     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                     name VARCHAR(100) NOT NULL UNIQUE,
@@ -16,11 +15,9 @@ def create_tables() -> None:
                     west_lon DOUBLE PRECISION NOT NULL,
                     east_lon DOUBLE PRECISION NOT NULL
                 );
-                """
-            )
+                """)
 
-            cur.execute(
-                """
+            cur.execute("""
                 CREATE TABLE IF NOT EXISTS aeroplanes (
                     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                     icao24 VARCHAR(6) NOT NULL,
@@ -40,5 +37,4 @@ def create_tables() -> None:
                         REFERENCES countries(id)
                         ON DELETE CASCADE
                 );
-                """
-            )
+                """)

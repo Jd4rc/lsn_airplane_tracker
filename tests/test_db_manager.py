@@ -1,20 +1,17 @@
-from flake8.options import manager
-
 from src.database.connection import get_connection
+from src.database.data_loader import insert_aircraft_list
+from src.database.data_loader import insert_country
 from src.database.db_manager import DBManager
-from src.database.data_loader import insert_country, insert_aircraft_list
 from src.models.aircraft import Aircraft
 
 
 def test_get_countries_and_aeroplanes_count():
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                """
+            cur.execute("""
                 TRUNCATE TABLE aeroplanes, countries
                 RESTART IDENTITY CASCADE;
-                """
-            )
+                """)
 
     insert_country(
         name="Germany",
@@ -37,8 +34,8 @@ def test_get_countries_and_aeroplanes_count():
     result = manager.get_countries_and_aeroplanes_count()
 
     assert result == [
-        ('France', 0),
-        ('Germany', 0),
+        ("France", 0),
+        ("Germany", 0),
     ]
 
 
@@ -105,9 +102,10 @@ def test_get_countries_and_aeroplanes_count_with_aircraft():
 
     result = manager.get_countries_and_aeroplanes_count()
     assert result == [
-        ('France', 1),
-        ('Germany', 2),
+        ("France", 1),
+        ("Germany", 2),
     ]
+
 
 def test_get_all_aeroplanes():
     country_id = insert_country(
@@ -151,8 +149,9 @@ def test_get_all_aeroplanes():
 
     assert len(result) == 2
 
-    assert result[0][1] == 'abc001'
-    assert result[1][1] == 'abc002'
+    assert result[0][1] == "abc001"
+    assert result[1][1] == "abc002"
+
 
 def test_get_avg_velocity():
     country_id = insert_country(
@@ -196,12 +195,14 @@ def test_get_avg_velocity():
 
     assert result == 250.0
 
+
 def test_get_avg_velocity_without_aeroplanes():
     manager = DBManager()
 
     result = manager.get_avg_velocity()
 
     assert result is None
+
 
 def test_get_aeroplanes_with_higher_velocity():
     country_id = insert_country(
@@ -313,7 +314,3 @@ def test_get_aeroplanes_with_keyword():
     assert len(result) == 2
     assert result[0][2] == "GER001"
     assert result[1][2] == "GER002"
-
-
-
-
