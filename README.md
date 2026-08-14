@@ -40,6 +40,8 @@ Airplane Tracker — учебный проект на Python для получе
 * заменять устаревший список самолётов страны актуальными данными;
 * получать данные из PostgreSQL через класс `DBManager`;
 * выполнять агрегирующие и фильтрующие запросы к данным о самолётах;
+* загружать актуальные данные в PostgreSQL через точку входа `loader.py`;
+* работать с сохранёнными данными через точку входа `main.py`;
 * выполнять автоматические тесты проекта.
 
 ## Работа с базой данных
@@ -113,37 +115,80 @@ Airplane Tracker — учебный проект на Python для получе
 * `get_aeroplanes_with_higher_velocity()` — получает самолёты со скоростью выше средней;
 * `get_aeroplanes_with_keyword()` — ищет самолёты по символам, содержащимся в позывном.
 
+## Точки входа
+
+### `loader.py`
+
+Точка входа для загрузки актуальных данных в PostgreSQL.
+
+Скрипт:
+
+1. получает географические границы выбранных стран через Nominatim;
+2. получает список самолётов в их воздушном пространстве через OpenSky Network;
+3. сохраняет или обновляет данные о странах;
+4. заменяет старый список самолётов каждой страны актуальными данными.
+
+Запуск:
+
+```bash
+poetry run python loader.py
+```
+
+Перед запуском необходимо настроить подключение к PostgreSQL и создать таблицы.
+
+### `main.py`
+
+Точка входа для работы с уже сохранёнными данными через класс `DBManager`.
+
+Скрипт позволяет проверить основные операции чтения и анализа данных:
+
+* количество самолётов по странам;
+* получение списка всех самолётов;
+* вычисление средней скорости;
+* получение самолётов со скоростью выше средней;
+* поиск самолётов по части позывного.
+
+Запуск:
+
+```bash
+poetry run python main.py
+```
+
 ## Структура проекта
 
 ```text
-src/
-├── api/
-│   ├── base.py
-│   ├── nominatim.py
-│   └── opensky.py
+.
+├── loader.py
+├── main.py
 │
-├── database/
-│   ├── connection.py
-│   ├── schema.py
-│   ├── data_loader.py
-│   └── db_manager.py
+├── src/
+│   ├── api/
+│   │   ├── base.py
+│   │   ├── nominatim.py
+│   │   └── opensky.py
+│   │
+│   ├── database/
+│   │   ├── connection.py
+│   │   ├── schema.py
+│   │   ├── data_loader.py
+│   │   └── db_manager.py
+│   │
+│   ├── models/
+│   │   └── aircraft.py
+│   │
+│   ├── services/
+│   │   └── flight_service.py
+│   │
+│   ├── storage/
+│   │   └── json_storage.py
+│   │
+│   └── cli.py
 │
-├── models/
-│   └── aircraft.py
-│
-├── services/
-│   └── flight_service.py
-│
-├── storage/
-│   └── json_storage.py
-│
-└── cli.py
-
-tests/
-├── conftest.py
-├── test_data_loader.py
-├── test_db_manager.py
-└── ...
+└── tests/
+    ├── conftest.py
+    ├── test_data_loader.py
+    ├── test_db_manager.py
+    └── ...
 ```
 
 ## Настройка базы данных
@@ -165,6 +210,18 @@ DB_PASSWORD=your_password
 
 ```bash
 poetry run python -m src.database.schema
+```
+
+После создания таблиц можно загрузить актуальные данные о странах и самолётах:
+
+```bash
+poetry run python loader.py
+```
+
+Для работы с сохранёнными данными через `DBManager`:
+
+```bash
+poetry run python main.py
 ```
 
 ## Использование CLI
