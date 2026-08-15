@@ -1,8 +1,9 @@
 from src.database.db_manager import DBManager
 from loader import main as load_data
+from src.database.schema import create_tables
 
 def main() -> None:
-
+    create_tables()
     load_data()
 
     manager = DBManager()
