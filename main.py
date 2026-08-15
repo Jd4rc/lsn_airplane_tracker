@@ -1,8 +1,9 @@
 from src.database.db_manager import DBManager
+from loader import main as load_data
 
 def main() -> None:
 
-
+    load_data()
 
     manager = DBManager()
 

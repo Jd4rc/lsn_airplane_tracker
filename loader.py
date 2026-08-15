@@ -7,10 +7,16 @@ from src.services.flight_service import FlightService
 def main() -> None:
 
     countries = [
-        'Germany',
+        "Germany",
         "France",
         "Poland",
         "Italy",
+        "Spain",
+        "Netherlands",
+        "Belgium",
+        "Austria",
+        "Switzerland",
+        "Czechia",
     ]
 
     nominatim_client = NominaAPIClient()
