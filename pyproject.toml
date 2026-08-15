@@ -8,7 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = "^3.14"
 dependencies = [
-    "requests (>=2.34.2,<3.0.0)"
+    "requests (>=2.34.2,<3.0.0)",
+    "psycopg2-binary (>=2.9.12,<3.0.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)"
 ]
 
 
@@ -23,7 +25,8 @@ dev = [
     "flake8 (>=7.3.0,<8.0.0)",
     "mypy (>=2.3.0,<3.0.0)",
     "pytest (>=9.1.1,<10.0.0)",
-    "pytest-cov (>=7.1.0,<8.0.0)"
+    "pytest-cov (>=7.1.0,<8.0.0)",
+    "types-psycopg2 (>=2.9.21.20260724,<3.0.0.0)"
 ]
 
 [tool.black]
